@@ -1,0 +1,61 @@
+# macOS system files
+.DS_Store
+
+# Xcode
+*.xcworkspace
+*.xcuserstate
+*.xcuserdata
+*.xcodeproj/project.xcworkspace
+*.xcodeproj/xcuserdata
+
+# SwiftPM (Swift Package Manager)
+.build/
+Packages/
+
+# Derived data
+DerivedData/
+
+# Build artifacts
+build/
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/
+fastlane/test_output/
+
+# Archives
+*.xcarchive
+
+# Provisioning profiles
+*.mobileprovision
+
+# IDE-specific
+.idea/
+*.swp
+
+# App file
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Logs
+*.log
+
+# Swift Package Index
+.swiftpm/xcode/package.xcworkspace
+
+# Other
+*.orig
+
