@@ -3,6 +3,7 @@
 
 https://github.com/user-attachments/assets/844d1946-9c29-4f44-855a-7bc0839b78e1
 
+Video by [Allen Y](https://www.pexels.com/video/niagara-falls-in-the-early-morning-loopable-18246053/)
 
 A lightweight utility to set videos as your desktop wallpaper on macOS (Ventura or later).  
 Includes a built-in ambient nature sound mixer for a relaxing experience.
