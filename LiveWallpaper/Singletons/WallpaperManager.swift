@@ -106,6 +106,9 @@ class WallpaperManager: ObservableObject {
         
         let playerItem = AVPlayerItem(url: url)
         
+        looper?.disableLooping()
+        looper = nil
+        player?.removeAllItems()
         player = AVQueuePlayer()
         looper = AVPlayerLooper(player: player!, templateItem: playerItem)
         
