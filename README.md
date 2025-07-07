@@ -14,7 +14,7 @@ Includes a built-in ambient nature sound mixer for a relaxing experience.
 
 - 🖼️ Set video as your desktop wallpaper
 - 🌿 Mix natural ambient sounds (rain, beach, fire, etc.), each with its own volume control.
-- 🧰 Signed & Sandboxed. Aside from read-only right to the selected videos, it does **not** access your files, internet, or personal data.
+- 🧰 Sandboxed, signed, and notarized by Apple. Aside from read-only right to the selected videos, it does **not** access your files, internet, or personal data.
 - 🧠 Lightweight: uses ~50MB RAM for 4K video
 - 💯 Completely free and open source
 
@@ -30,3 +30,15 @@ Note: After closing the app window, you can control the video wallpaper using th
 
 ---
 
+## 🍺 Install via Homebrew
+
+You can install **LiveWallpaper** on macOS using Homebrew:
+
+```sh
+brew install ducbao414/tap/live-wallpaper
+```
+
+To uninstall the app
+```sh
+brew uninstall live-wallpaper
+```
