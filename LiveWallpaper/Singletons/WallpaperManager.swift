@@ -69,25 +69,54 @@ class WallpaperManager: ObservableObject {
         
         let playerItem = AVPlayerItem(url: url)
         
-        if player != nil {
-            // If player exists, replace the current item
-            looper = nil
-            player?.removeAllItems()
-            looper = AVPlayerLooper(player: player!, templateItem: playerItem)
-        } else {
-            // Otherwise, create a new looping player
-            player = AVQueuePlayer()
-            looper = AVPlayerLooper(player: player!, templateItem: playerItem)
-            
-            let playerView = AVPlayerView()
-            playerView.player = player
-            playerView.controlsStyle = .none
-            playerView.videoGravity = .resizeAspectFill
-            
-            window?.contentView = NSHostingView(rootView: PlayerWrapper(playerView: playerView))
-            
-        }
+        player = AVQueuePlayer()
+        looper = AVPlayerLooper(player: player!, templateItem: playerItem)
+        
+        let playerView = PlayerLayerView(player: player!)
+        let hostView = NSHostingView(rootView: playerView)
+        animateContentViewTransition(window: window, newContentView: hostView)
+        
         player!.play()
+    }
+    
+
+    func animateContentViewTransition(window: NSWindow?, newContentView: NSView) {
+        guard let window = window else {return}
+        // Ensure both old and new views are layer-backed
+        window.contentView?.wantsLayer = true
+        newContentView.wantsLayer = true
+        
+        // Start with the new view invisible
+        newContentView.alphaValue = 0
+        
+        // Temporarily add the new view as a subview of the current content view
+        window.contentView?.addSubview(newContentView)
+        
+        // Match the new view's frame to the window's content view
+        newContentView.frame = window.contentView?.bounds ?? .zero
+        newContentView.autoresizingMask = [.width, .height]
+        
+        // Animate the transition
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.5 // Adjust duration as needed (e.g., 0.5 seconds)
+            context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
+            
+            // Fade out the old content view
+            window.contentView?.subviews.forEach { view in
+                if view != newContentView {
+                    view.animator().alphaValue = 0
+                }
+            }
+            
+            // Fade in the new content view
+            newContentView.animator().alphaValue = 1
+        } completionHandler: {
+            // After animation, set the new view as the content view
+            window.contentView = newContentView
+            
+            // Reset alpha to ensure consistency
+            newContentView.alphaValue = 1
+        }
     }
     
     /// Mute or unmute the wallpaper video
@@ -179,6 +208,8 @@ class WallpaperManager: ObservableObject {
     
     
 }
+
+
 
 struct PlayerWrapper: NSViewRepresentable {
     let playerView: AVPlayerView
