@@ -12,6 +12,8 @@ class WallpaperManager: ObservableObject {
     private var timer:Timer?
     private var didAutoPaused = false
     
+    private var isPlayingBeforeSleep = false
+    
     private init() {
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
                     // Call the function on the main thread
@@ -25,9 +27,44 @@ class WallpaperManager: ObservableObject {
         }
         RunLoop.main.add(timer!, forMode: .common)
         
-        print("WallpaperManager init")
+        let workspace = NSWorkspace.shared.notificationCenter
+        // Register for wake notification
+        workspace.addObserver(
+            self,
+            selector: #selector(handleWake),
+            name: NSWorkspace.didWakeNotification,
+            object: nil
+        )
+        // Register for sleep notification
+        workspace.addObserver(
+            self,
+            selector: #selector(handleSleep),
+            name: NSWorkspace.willSleepNotification,
+            object: nil
+        )
         
     } // Singleton
+    
+    @objc private func handleWake() {
+        print("System woke from sleep")
+        // Your wake action here
+        if isPlayingBeforeSleep {
+            print("resume player")
+            player?.play()
+            objectWillChange.send()
+        }
+        
+    }
+    
+    @objc private func handleSleep() {
+        print("System is about to sleep")
+        // Your sleep action here
+        if player?.rate != 0 {
+            isPlayingBeforeSleep = true
+        } else {
+            isPlayingBeforeSleep = false
+        }
+    }
     
     /// Creates the wallpaper window if not already created
     private func createWallpaperWindow() {
@@ -80,7 +117,7 @@ class WallpaperManager: ObservableObject {
     }
     
 
-    func animateContentViewTransition(window: NSWindow?, newContentView: NSView) {
+    private func animateContentViewTransition(window: NSWindow?, newContentView: NSView) {
         guard let window = window else {return}
         // Ensure both old and new views are layer-backed
         window.contentView?.wantsLayer = true
