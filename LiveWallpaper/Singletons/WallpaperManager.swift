@@ -9,7 +9,25 @@ class WallpaperManager: ObservableObject {
     @Published var player: AVQueuePlayer?
     private var looper: AVPlayerLooper?
     
-    private init() {} // Singleton
+    private var timer:Timer?
+    private var didAutoPaused = false
+    
+    private init() {
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+                    // Call the function on the main thread
+            DispatchQueue.main.async {
+                if isOvercast() {
+                    self?.autoPauseVideo()
+                } else {
+                    self?.autoResumeVideo()
+                }
+            }
+        }
+        RunLoop.main.add(timer!, forMode: .common)
+        
+        print("WallpaperManager init")
+        
+    } // Singleton
     
     /// Creates the wallpaper window if not already created
     private func createWallpaperWindow() {
@@ -88,6 +106,71 @@ class WallpaperManager: ObservableObject {
         window?.contentView = nil
     }
     
+    private func autoPauseVideo(){
+        if UserSetting.shared.powerSaver && !didAutoPaused {
+            for track in player?.currentItem?.tracks ?? [] {
+                if track.assetTrack?.hasMediaCharacteristic(.visual) == true {
+                    takeSnapshot()
+                    track.isEnabled = false
+                    didAutoPaused = true
+                    print("auto paused")
+                }
+            }
+        }
+    }
+    
+    private func autoResumeVideo(){
+        if didAutoPaused {
+            for track in player?.currentItem?.tracks ?? [] {
+                removeSnapshot()
+                track.isEnabled = true
+                didAutoPaused = false
+                print("auto resumed")
+            }
+        }
+    }
+    
+    private func takeSnapshot(){
+        guard let playerItem = player?.currentItem,
+              let rootView = window?.contentView else {
+            return
+        }
+        // Take a snapshot of the current frame
+        let generator = AVAssetImageGenerator(asset: playerItem.asset)
+        generator.appliesPreferredTrackTransform = true
+        let time = playerItem.currentTime()
+        
+        let image = try? generator.copyCGImage(at: time, actualTime: nil)
+        let snapshot = image.map { NSImage(cgImage: $0, size: .zero) }
+
+
+        // Overlay the snapshot to simulate a frozen frame
+        let imageView = NSImageViewFill()
+        imageView.image = snapshot
+        imageView.frame = rootView.bounds
+        imageView.autoresizingMask = [.width, .height]
+        imageView.identifier = NSUserInterfaceItemIdentifier("SnapshotOverlay")
+
+        // Add to root view
+        rootView.addSubview(imageView, positioned: .above, relativeTo: nil)
+    }
+    
+    private func removeSnapshot(){
+        guard let rootView = window?.contentView else {
+            return
+        }
+        for subview in rootView.subviews {
+            if subview.identifier?.rawValue == "SnapshotOverlay" {
+                NSAnimationContext.runAnimationGroup({ context in
+                    context.duration = 0.5
+                    subview.animator().alphaValue = 0
+                }, completionHandler: {
+                    subview.removeFromSuperview()
+                })
+            }
+        }
+    }
+    
     
 }
 
@@ -100,3 +183,23 @@ struct PlayerWrapper: NSViewRepresentable {
     
     func updateNSView(_ nsView: AVPlayerView, context: Context) {}
 }
+
+
+class NSImageViewFill : NSImageView {
+        
+        open override var image: NSImage? {
+            set {
+                self.layer = CALayer()
+                self.layer?.contentsGravity = CALayerContentsGravity.resizeAspectFill
+                self.layer?.contents = newValue
+                self.wantsLayer = true
+                
+                super.image = newValue
+            }
+            
+            get {
+                return super.image
+            }
+        }
+}
+

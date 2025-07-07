@@ -37,6 +37,16 @@ struct SettingView: View {
                     + Text(" icon on the menubar.")
                 ).frame(maxWidth: .infinity, alignment: .leading)
                 
+                Toggle("Power Saving Mode", isOn: $userSetting.powerSaver)
+                    .toggleStyle(.checkbox)
+                    .padding(.top)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text("""
+                    The video wallpaper's rendering will automatically pause when its window is fully (or near fully) obscured by other applications, reducing GPU/CPU usage and power consumption. 
+                    Audio playback remains active.
+                    """)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
                 Text("App Data")
                     .fontWeight(.bold)
                     .frame(maxWidth:.infinity, alignment: .leading)

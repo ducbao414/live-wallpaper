@@ -61,6 +61,12 @@ class UserSetting: ObservableObject {
         }
     }
     
+    @Published var powerSaver = false {
+        didSet {
+            defaults.set(powerSaver, forKey: "powerSaver")
+        }
+    }
+    
     var attemptId = ""
     
     private let defaults = UserDefaults.standard
@@ -72,6 +78,7 @@ class UserSetting: ObservableObject {
         self.sounds = getSounds()
         self.launchAtLogin = getlaunchAtLogin()
         self.doNotShowWindow = getdoNotShowWindow()
+        self.powerSaver = getPowerSaver()
     }
 
     
@@ -128,6 +135,10 @@ class UserSetting: ObservableObject {
     
     func getdoNotShowWindow() -> Bool {
         return defaults.bool(forKey: "doNotShowWindow")
+    }
+    
+    func getPowerSaver() -> Bool {
+        return defaults.bool(forKey: "powerSaver")
     }
     
     func getSounds() -> [Sound] {

@@ -102,7 +102,7 @@ struct DropZoneView: View {
         RoundedRectangle(cornerRadius: 10)
             .strokeBorder(Color.accentColor, style: StrokeStyle(lineWidth: 2, dash: [5]))
             .background(Color.gray.opacity(0.2))
-            .frame(width: 400, height: 250)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
             .overlay(
                 VStack {
                     Text("Drag & Drop your video here\nor Click to select")
