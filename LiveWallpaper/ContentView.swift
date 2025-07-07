@@ -9,34 +9,56 @@ enum NavItem: String, CaseIterable {
 }
 
 struct ContentView: View {
-    @State var selectedItem:NavItem = .recent
+    @State var selectedItem:NavItem? = .recent
     
     let recent = Recent()
     let ambientSounds = AmbientSounds()
     
+    var selectedView: some View {
+        if selectedItem == .recent {
+            AnyView(recent)
+        } else if selectedItem == .localVideo {
+            AnyView(VideoDropView())
+        } else if selectedItem == .ambientMixer {
+            AnyView(ambientSounds)
+        } else {
+            AnyView(SettingView())
+        }
+    }
+    
     var body: some View {
-        NavigationSplitView {
-            List(selection: $selectedItem) { // Bind selection
-                ForEach(NavItem.allCases, id: \.self) { item in
-                    Text(item.rawValue)
-                        .tag(item.rawValue) // Tag is necessary for selection tracking
+        
+        ZStack {
+            VStack {
+                NavigationView {
+                    List(NavItem.allCases, id: \.self) { item in
+                        NavigationLink(destination: selectedView, tag: item, selection: $selectedItem) {
+                            HStack {
+                                Text(item.rawValue)
+                                Spacer()
+                            }
+                        }
+                        .listRowSeparator(.hidden)
+                    }
+                    .padding(.top, 0)
+                    .frame(minWidth: 200)
                 }
-            }
-            .navigationSplitViewColumnWidth(ideal:200)
-            
-            .listStyle(SidebarListStyle()) // Makes it look more like Finder's sidebar
-        } detail: {
-            if selectedItem == .recent {
-                recent
-            } else if selectedItem == .localVideo {
-                VideoDropView()
-            } else if selectedItem == .ambientMixer {
-                ambientSounds
-            } else {
-                SettingView()
+                .toolbar {
+                    ToolbarItem(placement: .navigation) {
+                        Button(action: toggleSidebar) {
+                            Image(systemName: "sidebar.left")
+                        }
+                    }
+                }
             }
         }
         
+    }
+    
+   
+    
+    private func toggleSidebar() {
+        NSApp.keyWindow?.firstResponder?.tryToPerform(#selector(NSSplitViewController.toggleSidebar(_:)), with: nil)
     }
 }
 

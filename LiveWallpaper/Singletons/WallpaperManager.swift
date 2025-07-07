@@ -57,6 +57,12 @@ class WallpaperManager: ObservableObject {
             return
         }
         
+        for track in player?.currentItem?.tracks ?? [] {
+            removeSnapshot()
+            track.isEnabled = true
+            didAutoPaused = false
+        }
+        
         if window == nil {
             createWallpaperWindow()
         }

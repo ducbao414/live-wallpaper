@@ -46,7 +46,7 @@ struct AmbientSounds: View {
             }
             
         }
-        .navigationTitle("")
+        .navigationTitle("Ambient Sounds")
         .frame(minWidth: 500, minHeight: 400)
     }
 }
