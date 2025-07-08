@@ -6,7 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		DC1F964A2E1CC55500817874 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC1F96492E1CC55500817874 /* AVKit.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		DC1F96492E1CC55500817874 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		DC716A912D6B515A00AD7AE3 /* LiveWallpaper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LiveWallpaper.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -23,6 +28,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC1F964A2E1CC55500817874 /* AVKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -32,6 +38,7 @@
 		DC10A8ED2D709B5D00FD1199 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				DC1F96492E1CC55500817874 /* AVKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -279,7 +286,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.baonguyen.LiveWallpaper;
 				PRODUCT_NAME = LiveWallpaper;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -314,7 +321,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
-				MARKETING_VERSION = 1.0.5;
+				MARKETING_VERSION = 1.0.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.baonguyen.LiveWallpaper;
 				PRODUCT_NAME = LiveWallpaper;
 				PROVISIONING_PROFILE_SPECIFIER = "";
