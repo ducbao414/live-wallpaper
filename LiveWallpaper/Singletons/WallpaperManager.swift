@@ -89,7 +89,9 @@ class WallpaperManager: ObservableObject {
     }
     
     /// Sets or updates the wallpaper video URL
-    func setWallpaperVideo(url: URL) {
+    func setWallpaperVideo(video: Video) {
+        guard let url = constructURL(from: video.url) else {return}
+        
         if !isValidMovieFile(at: url){
             return
         }
@@ -112,7 +114,7 @@ class WallpaperManager: ObservableObject {
         player = AVQueuePlayer()
         looper = AVPlayerLooper(player: player!, templateItem: playerItem)
         
-        let playerView = PlayerLayerView(player: player!)
+        let playerView = PlayerLayerView(player: player!, video: video)
         let hostView = NSHostingView(rootView: playerView)
         animateContentViewTransition(window: window, newContentView: hostView)
         
@@ -225,7 +227,18 @@ class WallpaperManager: ObservableObject {
         imageView.frame = rootView.bounds
         imageView.autoresizingMask = [.width, .height]
         imageView.identifier = NSUserInterfaceItemIdentifier("SnapshotOverlay")
+        
+        let showDarkLayer: Bool = {
+            guard UserSetting.shared.adaptiveMode else { return false }
 
+            let isDark = NSApp.effectiveAppearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            return isDark
+            ? true: false
+        }()
+        
+        if showDarkLayer {
+            imageView.layer?.addSublayer(createAdaptiveDarkModeOverlay(rect: rootView.bounds, characteristics: UserSetting.shared.video.attrs))
+        }
         // Add to root view
         rootView.addSubview(imageView, positioned: .above, relativeTo: nil)
     }

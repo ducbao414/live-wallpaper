@@ -36,9 +36,8 @@ struct LiveWallpaperApp: App {
     
     func runOnLaunch(){
         print("applaunch \(userSetting.video)")
-        if let url = constructURL(from: userSetting.video.url){
-            WallpaperManager.shared.setWallpaperVideo(url: url)
-        }
+        WallpaperManager.shared.setWallpaperVideo(video: userSetting.video)
+        
     }
     
     

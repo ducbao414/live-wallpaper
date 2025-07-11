@@ -10,44 +10,40 @@ struct VideoDropView: View {
     var body: some View {
         ZStack {
             
-            VStack {
-                if let player = player {
+            if player == nil {
+                DropZoneView(onDrop: { url in
+                    loadVideo(from: url)
+                }, onSelect: {
+                    selectVideoFile()
+                })
+            } else {
+                VStack {
                     VideoPlayer(player: player)
                         .frame(height: 300)
                         .cornerRadius(10)
                         .padding()
-                } else {
-                    DropZoneView(onDrop: { url in
-                        loadVideo(from: url)
-                    }, onSelect: {
-                        selectVideoFile()
-                    })
-                }
-                if video != nil {
+                    
                     Button("Set as Wallpaper", action: {
                         
-                        WallpaperManager.shared.setWallpaperVideo(url: constructURL(from: video!.url)!)
+                        WallpaperManager.shared.setWallpaperVideo(video: video!)
                         UserSetting.shared.setVideo(video!)
                         video = nil
                         player = nil
                         toast()
                     })
+                    .opacity(video != nil ? 1.0 : 0.0)
                     .buttonStyle(.borderedProminent)
                     .padding()
+                    
                 }
-                
             }
-            .navigationTitle("Add your local video")
-            .frame(minWidth: 500, minHeight: 400)
-            
-            
             
             if showToast {
                 Toast(systemImage: "checkmark.circle.fill", message: "Wallpaper Set", isVisible: $showToast)
             }
-            
-            
         }
+        .navigationTitle("Add your local video")
+        .frame(minWidth: 500, minHeight: 400)
         
     }
     
@@ -65,20 +61,24 @@ struct VideoDropView: View {
         player = AVPlayer(url: url)
         player?.play()
         
-        let id = String(fnv1aHash(url.path))
+        let id = UUID().uuidString
         
         Task {
             do {
                 let copiedFileURL = try await copyFile(fileURL: url, targetFilename: id)
-                generateThumbnailAndSave(from: copiedFileURL.path, fileName: "\(id).png", completion: {thumbnailPath, error in
-                    if let thumbnailPath = thumbnailPath {
-                        self.video = Video(id: id, url: copiedFileURL.path, type: .local, thumbnail: thumbnailPath)
-                    }
-                })
+
+                guard let thumbnailPath = await generateThumbnailAndSave(from: copiedFileURL.path, fileName: "\(id).png") else {return}
+                
+                video = Video(id: id, url: copiedFileURL.path, type: .local, thumbnail: thumbnailPath)
+                
+                let attrs = await analyzeVideoCharacteristics(url: url)
+                video?.attrs = attrs
+                
             } catch {
                 print("Error copying file: \(error)")
             }
         }
+        
     }
     
     private func selectVideoFile() {

@@ -8,22 +8,37 @@
 import SwiftUI
 import AVKit
 
+struct ThumbnailImage: View {
+    let path: String
+
+    var body: some View {
+        if let image = NSImage(contentsOfFile: path) {
+            Image(nsImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 200, height: 150)
+                .clipped()
+        } else {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.gray.opacity(0.2))
+                .frame(width: 200, height: 150)
+        }
+    }
+}
+
 struct RecentVideoView: View {
-    @State var video:Video
+    let video:Video
     
     @State private var isHovered = false
     @State private var hoverTask: DispatchWorkItem?
     
     var body: some View {
         ZStack {
-            CachedAsyncImage(
-                url: constructURL(from: video.thumbnail)!,
-                size: CGSize(width: 200, height: 150)
-            ) {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.primary.opacity(0.1))
-                    .frame(width: 200, height: 150)
-            }
+            
+            ThumbnailImage(path: video.thumbnail)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .contentShape(Rectangle())
+            
             if isHovered {
                 let videoURL = constructURL(from: video.url)
                 
@@ -35,12 +50,6 @@ struct RecentVideoView: View {
         }
         .frame(width:200, height: 150)
         .clipShape(RoundedRectangle(cornerRadius: 8))
-        .onTapGesture {
-            print(video)
-            WallpaperManager.shared.setWallpaperVideo(url: constructURL(from: video.url)!)
-            UserSetting.shared.setVideo(video)
-            
-        }
         .onHover { hovering in
             if hovering {
                 startHoverDelay()

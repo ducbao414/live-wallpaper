@@ -47,6 +47,15 @@ struct SettingView: View {
                     """)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 
+                Toggle("Adaptive Theme", isOn: $userSetting.adaptiveMode)
+                    .toggleStyle(.checkbox)
+                    .padding(.top)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                Text("""
+                    Adapt to your device dark/light theme
+                    """)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                
                 Text("App Data")
                     .fontWeight(.bold)
                     .frame(maxWidth:.infinity, alignment: .leading)

@@ -16,7 +16,7 @@ struct Recent: View {
     
     
     let columns = [
-        GridItem(.adaptive(minimum: 200), spacing: 10)  // Auto-fit layout
+        GridItem(.adaptive(minimum: 200), spacing: 10)
     ]
     
     var body: some View {
@@ -25,7 +25,7 @@ struct Recent: View {
             if userSetting.recent.isEmpty {
                 HStack {
                     Spacer()
-                    Text("Nothing here yet. Please select wallpapers from the Online Library or use your own local videos")
+                    Text("Nothing here yet.")
                         .frame(maxWidth: 400)
                         .font(.title2)
                         .foregroundStyle(.tertiary)
@@ -34,12 +34,18 @@ struct Recent: View {
             } else {
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 20) {
-                        ForEach(userSetting.recent.reversed(), id: \.self) { video in
+                        ForEach(userSetting.recent.reversed(), id: \.self.id) { video in
                             RecentVideoView(video: video)
                                 .overlay(
                                     RoundedRectangle(cornerRadius: 8)
                                         .stroke(String(video.id) == userSetting.video.id ? Color.accentColor : Color.clear, lineWidth: 4)
                                 )
+                                .onTapGesture {
+                                    print(video)
+                                    WallpaperManager.shared.setWallpaperVideo(video: video)
+                                    UserSetting.shared.setVideo(video)
+                                    
+                                }
                         }
                     }
                     .padding(8)
