@@ -24,7 +24,7 @@ struct VideoDropView: View {
                         .padding()
                     
                     Button("Set as Wallpaper", action: {
-                        
+                        player?.pause()
                         WallpaperManager.shared.setWallpaperVideo(video: video!)
                         UserSetting.shared.setVideo(video!)
                         video = nil

@@ -163,7 +163,18 @@ class WallpaperManager: ObservableObject {
     
     /// Mute or unmute the wallpaper video
     func toggleMute() {
-        player?.isMuted.toggle()
+        
+        if let player = player {
+            player.isMuted.toggle()
+            
+            for track in player.currentItem?.tracks ?? [] {
+                if track.assetTrack?.hasMediaCharacteristic(.audible) == true {
+                    track.isEnabled = !player.isMuted
+                }
+            }
+        }
+        
+        
         objectWillChange.send()
     }
     

@@ -27,7 +27,13 @@ struct InlineVideoPlayer: NSViewRepresentable {
         let player = AVPlayer(url: url)
         let playerLayer = AVPlayerLayer(player: player)
         
-        player.volume = 0 // Mute the video
+        for track in player.currentItem?.tracks ?? [] {
+            if track.assetTrack?.hasMediaCharacteristic(.audible) == true {
+                track.isEnabled = false
+            }
+        }
+        player.volume = 0.0
+        
         playerLayer.videoGravity = .resizeAspectFill
         playerLayer.frame = view.bounds
         playerLayer.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
