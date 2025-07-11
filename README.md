@@ -39,7 +39,7 @@ brew install ducbao414/tap/live-wallpaper
 
 Update:
 ```sh
-brew install ducbao414/tap/live-wallpaper
+brew upgrade ducbao414/tap/live-wallpaper
 ```
 
 Uninstall:
