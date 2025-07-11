@@ -100,7 +100,7 @@ func createAdaptiveDarkModeOverlay(rect: CGRect, characteristics: VideoAttrs? = 
     overlayLayer.autoresizingMask = [.layerWidthSizable, .layerHeightSizable]
     
     // Brightness adjustment curve (more aggressive for bright content)
-    let baseDarkening = min(0.4, brightness * 0.6)
+    let baseDarkening = min(0.2, brightness * 0.4)
     let extraDarkening = brightness > 0.3 ? (brightness - 0.3) * 0.5 : 0
     let brightnessAdj = Float(baseDarkening + extraDarkening)
     
