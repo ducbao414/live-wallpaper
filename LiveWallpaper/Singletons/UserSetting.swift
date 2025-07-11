@@ -177,6 +177,20 @@ class UserSetting: ObservableObject {
         }
     }
     
+    func deleteVideo(_ video: Video){
+        recent.removeAll {$0.id == video.id}
+        if let encoded = try? JSONEncoder().encode(recent) {
+            defaults.set(encoded, forKey: "recent")
+            self.recent = recent
+        }
+        
+        do {
+            try FileManager.default.removeItem(atPath: video.url)
+            try FileManager.default.removeItem(atPath: video.thumbnail)
+        } catch {}
+        
+    }
+    
     func resetVideoAndRecent(){
         video = Video(id: "", url: "", type: .pixabay, thumbnail: "")
         recent = []
