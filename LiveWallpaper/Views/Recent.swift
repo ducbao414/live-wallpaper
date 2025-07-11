@@ -23,13 +23,20 @@ struct Recent: View {
         VStack(spacing: 10) {
             
             if userSetting.recent.isEmpty {
-                HStack {
-                    Spacer()
+                VStack {
                     Text("Nothing here yet.")
-                        .frame(maxWidth: 400)
-                        .font(.title2)
+                        .frame(maxWidth: 300)
+                        .font(.title)
                         .foregroundStyle(.tertiary)
-                    Spacer()
+                    Text(
+                    """
+                    If you don't have a suitable video, check out Pexels and Pixabay.
+                    They offer high-quality, visually stunning videos for free.
+                    """)
+                    .frame(maxWidth: 300)
+                    .foregroundStyle(.tertiary)
+                    .font(.title2)
+                    .padding()
                 }
             } else {
                 ScrollView {
